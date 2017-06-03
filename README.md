@@ -1,2 +1,2 @@
-# not_a_unix_term.js
+# rTerm
 Fake unix terminal for my personal page
