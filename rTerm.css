@@ -1,0 +1,35 @@
+.blink_cursor {
+        animation:1s blinker linear infinite;
+        -webkit-animation:1s blinker linear infinite;
+        -moz-animation:1s blinker linear infinite;
+
+        text-align: center;
+        font-weight: normal;
+        font-family: 'Catamaran', sans-serif;
+        color: #999999;
+    }
+
+    @-moz-keyframes blinker {  
+        0% { opacity: 1.0; }
+        50% { opacity: 1.0; }
+        100% { opacity: 0.0; }
+     }
+
+    @-webkit-keyframes blinker {  
+        0% { opacity: 1.0; }
+        50% { opacity: 1.0; }
+        100% { opacity: 0.0; }
+     }
+
+    @keyframes blinker {  
+        0% { opacity: 1.0; }
+        50% { opacity: 1.0; }
+        100% { opacity: 0.0; }
+     }
+
+.rterm {
+    text-align: center;
+    font-weight: normal;
+    font-family: 'Catamaran', sans-serif;
+    color: #999999;
+}
