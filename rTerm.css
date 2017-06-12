@@ -39,20 +39,13 @@
 
 #term {
     position: fixed;
-    /* center the div */
+
     right: 0;
     left: 0;
     margin-right: auto;
     margin-left: auto;
-    /* give it dimensions */
+
     min-height: 10em;
     width: 425px;
     text-align: left;
-    /*position: fixed;
-    right: 0;
-    left: 0;
-    margin-right: auto;
-    margin-left: auto;*/
-    /*min-height: 10em;*/
-    /*width: 90%;*/
 }

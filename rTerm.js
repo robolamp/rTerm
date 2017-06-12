@@ -15,17 +15,22 @@ rTerm = function (options) {
     this.maxStrings = options.maxStrings || 15;
 
     this.links = {};
+    this.clicked = false;
 
     this.init = function() {
-        $.getJSON(this.file, function(data) {
+        $.getJSON(this.file, (function(data) {
             this.links = data;
-        });
+        }).bind(this));
         
         $("#" + this.divid).html('<div id="term"> <span id="termcli">' +
                                  this.termPrev + '</span><span class="cursor">&#9608</span></div>');
 
         $("#term").click((function(event) {
-            $(document).keydown(this.keyCallback);
+            if (!this.clicked)
+            {
+                $(document).keydown(this.keyCallback);
+                this.clicked = true;
+            } 
         }).bind(this));
     };
 
@@ -34,17 +39,14 @@ rTerm = function (options) {
     this.input = '';
     this.nStrings = 0;
 
-    this.addStringToTerm = function () {
-        this.nStrings += 2;
+    this.updateTerm = function () {
         if (this.nStrings > this.maxStrings)
         {
-            this.delFristString();
-            this.delFristString();
+            while (this.nStrings > this.maxStrings)
+            {
+                this.delFristString();
+            }
         }
-        $("#termcli").html(this.oldInput + this.termPrev + this.input);
-    };
-
-    this.updateTerm = function () {
         $("#termcli").html(this.oldInput + this.termPrev + this.input);
     };
 
@@ -82,42 +84,43 @@ rTerm = function (options) {
     }).bind(this);
 
     this.enterCallback = (function () {
-
         if (this.input == '')
         {
-            this.oldInput += this.termPrev + this.input + '<br>';
-            this.addStringToTerm();
+            this.emptyCallback();
+        }
+        else if (this.input == "ls")
+        {
+            this.lsCallback();
         }
         else
-        {
-            var output = this.unknownCallback();
-
-            this.oldInput += this.termPrev + this.input + '<br>' + output + '<br>';
-            this.input = '';
-            this.addStringToTerm();
+        {   
+            this.unknownCallback();
         }
     }).bind(this);
+
+    this.emptyCallback = (function() {
+        this.oldInput += this.termPrev + this.input + '<br>';
+        this.nStrings++;
+        this.updateTerm();
+    }).bind(this)
 
     this.unknownCallback = (function() {
-        return this.input + ": command not found";
-    }).bind(this);
-
-    this.lsAllCallback = (function() {
-        var allItems = {};
-        for (var item of this.links.main) {
-            console.log(item); 
-        }
-
-        for (var item of this.links.hidden) {
-            console.log(item);
-        }
+        this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": command not found" + '<br>';
+        this.input = '';
+        this.nStrings += 2;
+        this.updateTerm();
     }).bind(this);
 
     this.lsCallback = (function() {
-        var allItems = {};
-        for (var item of this.links.main) {
-            console.log(item); 
+        this.oldInput += this.termPrev + this.input + '<br>';
+        this.nStrings++;
+
+        for (var item in this.links.main) {
+            this.oldInput += '<a href="' + this.links.main[item] + '" target="_blank">' + item + '</a><br>';
+            this.nStrings++;
         }
+        this.input = '';
+        this.updateTerm();
     }).bind(this);
 
     this.init();
