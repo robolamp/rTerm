@@ -105,6 +105,14 @@ rTerm = function (options) {
         {
             this.catCallback(this.input.substr(4));
         }
+        else if (this.input.indexOf("whoami") == 0)
+        {
+            this.whoamiCallback();
+        }
+        else if (this.input.indexOf("uname") == 0)
+        {
+            this.unameCallback();
+        }
         else
         {   
             this.unknownCallback();
@@ -217,6 +225,21 @@ rTerm = function (options) {
 
         window.open(url, '_blank').focus();
     }).bind(this);
+
+    this.whoamiCallback = (function() {
+        this.oldInput += this.termPrev + this.input + '<br>' + this.links.whoami + '<br>';
+        this.input = '';
+        this.nStrings += 2;
+        this.updateTerm();
+    }).bind(this);
+
+    this.unameCallback = (function() {
+        this.oldInput += this.termPrev + this.input + '<br>' + this.links.uname + '<br>';
+        this.input = '';
+        this.nStrings += 2;
+        this.updateTerm();
+    }).bind(this);
+
 
     this.init();
 
