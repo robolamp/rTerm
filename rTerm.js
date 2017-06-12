@@ -101,6 +101,10 @@ rTerm = function (options) {
         {
             this.cdCallback(this.input.substr(3));
         }
+        else if (this.input.indexOf("cat ") == 0)
+        {
+            this.catCallback(this.input.substr(4));
+        }
         else
         {   
             this.unknownCallback();
@@ -148,6 +152,38 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    this.catCallback = (function(dstname) {
+        var url = '';
+        console.log(dstname);
+        for (var item in this.links.main) {
+            if (dstname == String(item))
+            {
+                url = this.links.main[item];
+                console.log(url);
+            }
+        }
+        for (var item in this.links.hidden) {
+            if (dstname == String(item))
+            {
+                url = this.links.hidden[item];
+                console.log(url);
+            }
+        }
+        if (url == '')
+        {
+            this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
+            this.input = '';
+            this.nStrings += 2;
+            this.updateTerm();
+            return;
+        }
+
+        this.oldInput += this.termPrev + this.input + '<br>' + url + '<br>';
+        this.input = '';
+        this.nStrings += 2;
+        this.updateTerm();
+    }).bind(this);
+
     this.cdCallback = (function(dstname) {
         var url = '';
         console.log(dstname);
@@ -174,15 +210,13 @@ rTerm = function (options) {
             return;
         }
 
-        console.log(url);
-
         this.oldInput += this.termPrev + this.input + '<br>';
         this.input = '';
         this.nStrings++;
         this.updateTerm();
 
         window.open(url, '_blank').focus();
-    })
+    }).bind(this);
 
     this.init();
 
