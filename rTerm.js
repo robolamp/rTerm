@@ -91,7 +91,7 @@ rTerm = function (options) {
         {
             this.emptyCallback();
         }
-        else if (this.input.indexOf("cd") == 0 && this.input != "ls -a")
+        else if (this.input.indexOf("ls") == 0 && this.input != "ls -a")
         {
             this.lsCallback();
         }
