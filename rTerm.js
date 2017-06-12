@@ -97,6 +97,10 @@ rTerm = function (options) {
         {
             this.lsaCallback();
         }
+        else if (this.input.indexOf("cd ") == 0)
+        {
+            this.cdCallback(this.input.substr(3));
+        }
         else
         {   
             this.unknownCallback();
@@ -143,6 +147,42 @@ rTerm = function (options) {
         this.input = '';
         this.updateTerm();
     }).bind(this);
+
+    this.cdCallback = (function(dstname) {
+        var url = '';
+        console.log(dstname);
+        for (var item in this.links.main) {
+            if (dstname == String(item))
+            {
+                url = this.links.main[item];
+                console.log(url);
+            }
+        }
+        for (var item in this.links.hidden) {
+            if (dstname == String(item))
+            {
+                url = this.links.hidden[item];
+                console.log(url);
+            }
+        }
+        if (url == '')
+        {
+            this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
+            this.input = '';
+            this.nStrings += 2;
+            this.updateTerm();
+            return;
+        }
+
+        console.log(url);
+
+        this.oldInput += this.termPrev + this.input + '<br>';
+        this.input = '';
+        this.nStrings++;
+        this.updateTerm();
+
+        window.open(url, '_blank').focus();
+    })
 
     this.init();
 
