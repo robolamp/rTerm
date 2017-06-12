@@ -59,7 +59,8 @@ rTerm = function (options) {
     this.keyCallback = (function(event) {
         if ((event.which >= 48 && event.which <= 90) || 
             (event.which >= 96 && event.which <= 107) ||
-            event.which == 109 || event.which == 111)
+            event.which == 109 || event.which == 111 ||
+            event.which == 32 || event.which == 182)
         {
             this.addCallback(event.key);
         }
@@ -92,6 +93,10 @@ rTerm = function (options) {
         {
             this.lsCallback();
         }
+        else if (this.input == "ls -a")
+        {
+            this.lsaCallback();
+        }
         else
         {   
             this.unknownCallback();
@@ -116,7 +121,23 @@ rTerm = function (options) {
         this.nStrings++;
 
         for (var item in this.links.main) {
-            this.oldInput += '<a href="' + this.links.main[item] + '" target="_blank">' + item + '</a><br>';
+            this.oldInput += '<a class="link" href="' + this.links.main[item] + '" target="_blank">' + item + '</a><br>';
+            this.nStrings++;
+        }
+        this.input = '';
+        this.updateTerm();
+    }).bind(this);
+
+    this.lsaCallback = (function() {
+        this.oldInput += this.termPrev + this.input + '<br>';
+        this.nStrings++;
+
+        for (var item in this.links.main) {
+            this.oldInput += '<a class="link" href="' + this.links.main[item] + '" target="_blank">' + item + '</a><br>';
+            this.nStrings++;
+        }
+        for (var item in this.links.hidden) {
+            this.oldInput += '<a class="link" href="' + this.links.hidden[item] + '" target="_blank">' + item + '</a><br>';
             this.nStrings++;
         }
         this.input = '';
