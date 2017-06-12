@@ -17,6 +17,8 @@ rTerm = function (options) {
     this.links = {};
     this.clicked = false;
 
+    this.commands = ["cd", "ls", "cat", "uname", "whoami", "idk"];
+
     this.init = function() {
         $.getJSON(this.file, (function(data) {
             this.links = data;
@@ -112,6 +114,10 @@ rTerm = function (options) {
         else if (this.input.indexOf("uname") == 0)
         {
             this.unameCallback();
+        }
+        else if (this.input.indexOf("idk") == 0)
+        {
+            this.idkCallback();
         }
         else
         {   
@@ -237,6 +243,18 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>' + this.links.uname + '<br>';
         this.input = '';
         this.nStrings += 2;
+        this.updateTerm();
+    }).bind(this);
+
+    this.idkCallback = (function() {
+        this.oldInput += this.termPrev + this.input + '<br>';
+        this.nStrings++;
+
+        for (var item of this.commands) {
+            this.oldInput += item + '<br>';
+            this.nStrings++;
+        }
+        this.input = '';
         this.updateTerm();
     }).bind(this);
 
