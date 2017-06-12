@@ -91,11 +91,11 @@ rTerm = function (options) {
         {
             this.emptyCallback();
         }
-        else if (this.input == "ls")
+        else if (this.input.indexOf("cd") == 0 && this.input != "ls -a")
         {
             this.lsCallback();
         }
-        else if (this.input == "ls -a")
+        else if (this.input == "ls -a" || this.input == "ls a")
         {
             this.lsaCallback();
         }
@@ -114,6 +114,10 @@ rTerm = function (options) {
         else if (this.input.indexOf("uname") == 0)
         {
             this.unameCallback();
+        }
+        else if (this.input.indexOf("idk") == 0)
+        {
+            this.idkCallback();
         }
         else if (this.input.indexOf("idk") == 0)
         {
@@ -169,16 +173,23 @@ rTerm = function (options) {
     this.catCallback = (function(dstname) {
         var url = '';
         console.log(dstname);
+
+        if (dstname == "/dev/random" || dstname == "/dev/urandom") {
+            this.oldInput += this.termPrev + this.input + '<br>' + String(Math.random()) + '<br>';
+            this.input = '';
+            this.nStrings += 2;
+            this.updateTerm();
+            return;
+        }
+
         for (var item in this.links.main) {
-            if (dstname == String(item))
-            {
+            if (dstname == String(item)) {
                 url = this.links.main[item];
                 console.log(url);
             }
         }
         for (var item in this.links.hidden) {
-            if (dstname == String(item))
-            {
+            if (dstname == String(item)) {
                 url = this.links.hidden[item];
                 console.log(url);
             }
@@ -240,6 +251,13 @@ rTerm = function (options) {
     }).bind(this);
 
     this.unameCallback = (function() {
+        this.oldInput += this.termPrev + this.input + '<br>' + this.links.uname + '<br>';
+        this.input = '';
+        this.nStrings += 2;
+        this.updateTerm();
+    }).bind(this);
+
+    this.randomCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>' + this.links.uname + '<br>';
         this.input = '';
         this.nStrings += 2;
