@@ -115,11 +115,7 @@ rTerm = function (options) {
         {
             this.unameCallback();
         }
-        else if (this.input.indexOf("idk") == 0)
-        {
-            this.idkCallback();
-        }
-        else if (this.input.indexOf("idk") == 0)
+        else if (this.input.indexOf("idk") == 0 || this.input.indexOf("help") == 0)
         {
             this.idkCallback();
         }
