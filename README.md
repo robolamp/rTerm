@@ -8,3 +8,4 @@ Fake unix terminal for my personal page
 * uname
 * whoami
 * idk
+* help
