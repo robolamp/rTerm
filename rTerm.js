@@ -9,8 +9,8 @@ rTerm = function (options) {
     this.divid = options.div || 'rterm';
     // Username@hostname
     this.uhsername = options.uhsername || 'user@hostname'; 
-    // Width of the terminal
-    this.width = options.width || '600';
+    // High of the terminal
+    this.height = options.height || 400;
     // Maximal number of strings
     this.maxStrings = options.maxStrings || 15;
 
@@ -36,14 +36,12 @@ rTerm = function (options) {
     this.nStrings = 0;
 
     this.updateTerm = function () {
-        if (this.nStrings > this.maxStrings)
-        {
-            while (this.nStrings > this.maxStrings)
-            {
-                this.delFristString();
-            }
-        }
         $("#termcli").html(this.oldInput + this.termPrev + this.input);
+        while ($("#term").height() > this.height) 
+        {
+            this.delFristString();
+            $("#termcli").html(this.oldInput + this.termPrev + this.input);
+        }
     };
 
     this.delFristString = function () {
