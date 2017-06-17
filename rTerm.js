@@ -17,8 +17,6 @@ rTerm = function (options) {
     this.links = {};
     this.clicked = false;
 
-    this.commands = ["cd", "ls", "cat", "uname", "whoami", "idk"];
-
     this.init = function() {
         $.getJSON(this.file, (function(data) {
             this.links = data;
@@ -83,37 +81,17 @@ rTerm = function (options) {
         {
             this.emptyCallback();
         }
-        else if (this.input.indexOf("ls") == 0 && this.input != "ls -a")
-        {
-            this.lsCallback();
-        }
-        else if (this.input == "ls -a" || this.input == "ls a")
-        {
-            this.lsaCallback();
-        }
-        else if (this.input.indexOf("cd ") == 0)
-        {
-            this.cdCallback(this.input.substr(3));
-        }
-        else if (this.input.indexOf("cat ") == 0)
-        {
-            this.catCallback(this.input.substr(4));
-        }
-        else if (this.input.indexOf("whoami") == 0)
-        {
-            this.whoamiCallback();
-        }
-        else if (this.input.indexOf("uname") == 0)
-        {
-            this.unameCallback();
-        }
-        else if (this.input.indexOf("idk") == 0 || this.input.indexOf("help") == 0)
-        {
-            this.idkCallback();
-        }
         else
-        {   
-            this.unknownCallback();
+        {
+            var args = this.input.split(" ");
+            if (args[0] in this.funcMap)
+            {
+                this.funcMap[args[0]](args);
+            }
+            else
+            {
+                this.unknownCallback();
+            }
         }
     }).bind(this);
 
@@ -130,7 +108,7 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
-    this.lsCallback = (function() {
+    this.lsCallback = (function(args) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
 
@@ -138,29 +116,21 @@ rTerm = function (options) {
             this.oldInput += '<a class="link" href="' + this.links.main[item] + '" target="_blank">' + item + '</a><br>';
             this.nStrings++;
         }
+        if (args[1] == "a" || args[1] == "-a")
+        {
+            for (var item in this.links.hidden) {
+                this.oldInput += '<a class="link" href="' + this.links.hidden[item] + '" target="_blank">' + item + '</a><br>';
+                this.nStrings++;
+            }
+        }
+
         this.input = '';
         this.updateTerm();
     }).bind(this);
 
-    this.lsaCallback = (function() {
-        this.oldInput += this.termPrev + this.input + '<br>';
-        this.nStrings++;
-
-        for (var item in this.links.main) {
-            this.oldInput += '<a class="link" href="' + this.links.main[item] + '" target="_blank">' + item + '</a><br>';
-            this.nStrings++;
-        }
-        for (var item in this.links.hidden) {
-            this.oldInput += '<a class="link" href="' + this.links.hidden[item] + '" target="_blank">' + item + '</a><br>';
-            this.nStrings++;
-        }
-        this.input = '';
-        this.updateTerm();
-    }).bind(this);
-
-    this.catCallback = (function(dstname) {
+    this.catCallback = (function(args) {
         var url = '';
-        console.log(dstname);
+        var dstname = args[1];
 
         if (dstname == "/dev/random" || dstname == "/dev/urandom") {
             this.oldInput += this.termPrev + this.input + '<br>' + String(Math.random()) + '<br>';
@@ -173,13 +143,11 @@ rTerm = function (options) {
         for (var item in this.links.main) {
             if (dstname == String(item)) {
                 url = this.links.main[item];
-                console.log(url);
             }
         }
         for (var item in this.links.hidden) {
             if (dstname == String(item)) {
                 url = this.links.hidden[item];
-                console.log(url);
             }
         }
         if (url == '')
@@ -197,22 +165,20 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
-    this.cdCallback = (function(dstname) {
+    this.cdCallback = (function(args) {
         var url = '';
-        console.log(dstname);
+        var dstname = args[1];
+
         for (var item in this.links.main) {
             if (dstname == String(item))
             {
                 url = this.links.main[item];
-                console.log(url);
             }
         }
         for (var item in this.links.hidden) {
             if (dstname == String(item))
             {
-                url = this.links.hidden[item];
-                console.log(url);
-            }
+                url = this.links.hidden[item];            }
         }
         if (url == '')
         {
@@ -256,7 +222,7 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
 
-        for (var item of this.commands) {
+        for (var item in this.funcMap) {
             this.oldInput += item + '<br>';
             this.nStrings++;
         }
@@ -264,9 +230,17 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    this.funcMap = {
+        "ls": this.lsCallback,
+        "cd": this.cdCallback,
+        "cat": this.catCallback,
+        "whoami": this.whoamiCallback,
+        "uname": this.unameCallback,
+        "idk": this.idkCallback,
+        "help": this.idkCallback
+    };
 
     this.init();
-
     return this;
 }
 
