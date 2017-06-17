@@ -26,14 +26,8 @@ rTerm = function (options) {
         
         $("#" + this.divid).html('<div id="term"> <span id="termcli">' +
                                  this.termPrev + '</span><span class="cursor">&#9608</span></div>');
-
-        $("#term").click((function(event) {
-            if (!this.clicked)
-            {
-                $(document).keydown(this.keyCallback);
-                this.clicked = true;
-            } 
-        }).bind(this));
+        
+        $(document).keydown(this.keyCallback);
     };
 
     this.termPrev = this.uhsername + ':~$  '
