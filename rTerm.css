@@ -4,8 +4,9 @@
     -moz-animation:1s blinker linear infinite;
 
     text-align: center;
-    font-weight: normal;
-    font-family: 'Catamaran', sans-serif;
+    /*font-weight: normal;*/
+    font-size: 12px;
+    font-family: monospace, sans-serif;
     color: #999999;
 }
 
@@ -32,8 +33,9 @@
     display: inline-block;
     width:750px;
     max-width:750px;
-    font-weight: normal;
-    font-family: 'Catamaran', sans-serif;
+    /*font-weight: normal;*/
+    font-size: 12px;
+    font-family: monospace, sans-serif;
     color: #999999;
 }
 

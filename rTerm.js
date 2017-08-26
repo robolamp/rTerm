@@ -13,6 +13,8 @@ rTerm = function (options) {
     this.height = options.height || 400;
     // Maximal number of strings
     this.maxStrings = options.maxStrings || 15;
+    // Save string to server
+    this.saveStrings = options.saveStrings || false;
 
     this.links = {};
     this.clicked = false;
@@ -56,6 +58,10 @@ rTerm = function (options) {
         {
             this.addCallback(event.key);
         }
+	if (event.which == 189)
+	{
+	    this.addCallback("-");
+	}
         if (event.which == 8 || event.which == 46 || event.which == 110)
         {
             this.delCallback();
@@ -83,6 +89,10 @@ rTerm = function (options) {
         }
         else
         {
+            if (this.saveStrings)
+            {
+                this.sendString(this.input);
+            }
             var args = this.input.split(" ");
             if (args[0] in this.funcMap)
             {
@@ -99,13 +109,17 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
         this.updateTerm();
-    }).bind(this)
+    }).bind(this);
 
     this.unknownCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": command not found" + '<br>';
         this.input = '';
         this.nStrings += 2;
         this.updateTerm();
+    }).bind(this);
+
+    this.sendString = (function() {
+        var xhttp = new XMLHttpRequest();
     }).bind(this);
 
     this.lsCallback = (function(args) {
@@ -243,5 +257,3 @@ rTerm = function (options) {
     this.init();
     return this;
 }
-
-
