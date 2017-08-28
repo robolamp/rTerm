@@ -22,11 +22,13 @@ rTerm = function (options) {
     this.init = function() {
         $.getJSON(this.file, (function(data) {
             this.data = data;
+            if (this.data.upstart !== "undefined") {
+              this.callUpstart();
+            }
         }).bind(this));
 
         $("#" + this.divid).html(
-          '<div id="term"> <span id="termcli">' +
-          this.termPrev +
+          '<div id="term"> <span id="termcli">' + this.termPrev +
           '</span><span class="cursor">&#9608</span></div>'
         );
 
@@ -37,6 +39,15 @@ rTerm = function (options) {
     this.oldInput = ''
     this.input = '';
     this.nStrings = 0;
+
+    this.callUpstart = function () {
+      for (var command of this.data.upstart) {
+        for (var letter of command) {
+            this.addCallback(letter);
+        }
+        this.enterCallback();
+      }
+    };
 
     this.updateTerm = function () {
         $("#termcli").html(this.oldInput + this.termPrev + this.input);
@@ -61,10 +72,10 @@ rTerm = function (options) {
         {
             this.addCallback(event.key);
         }
-	if (event.which == 189)
-	{
-	    this.addCallback("-");
-	}
+        if (event.which == 189)
+	      {
+	         this.addCallback("-");
+	      }
         if (event.which == 8 || event.which == 46 || event.which == 110)
         {
             this.delCallback();
@@ -136,8 +147,10 @@ rTerm = function (options) {
         if (args[1] == "a" || args[1] == "-a")
         {
             for (var item in this.data.hidden) {
-                this.oldInput += '<a class="link" href="' + this.data.hidden[item] + '" target="_blank">' + item + '</a><br>';
-                this.nStrings++;
+                if (item[0] != "/") {
+                    this.oldInput += '<a class="link" href="' + this.data.hidden[item] + '" target="_blank">' + item + '</a><br>';
+                    this.nStrings++;
+                }
             }
         }
 
