@@ -8,7 +8,7 @@ rTerm = function (options) {
     // An id of div where to place the terminal
     this.divid = options.div || 'rterm';
     // Username@hostname
-    this.uhsername = options.uhsername || 'user@hostname'; 
+    this.uhsername = options.uhsername || 'user@hostname';
     // High of the terminal
     this.height = options.height || 400;
     // Maximal number of strings
@@ -16,17 +16,20 @@ rTerm = function (options) {
     // Save string to server
     this.saveStrings = options.saveStrings || false;
 
-    this.links = {};
+    this.data = {};
     this.clicked = false;
 
     this.init = function() {
         $.getJSON(this.file, (function(data) {
-            this.links = data;
+            this.data = data;
         }).bind(this));
-        
-        $("#" + this.divid).html('<div id="term"> <span id="termcli">' +
-                                 this.termPrev + '</span><span class="cursor">&#9608</span></div>');
-        
+
+        $("#" + this.divid).html(
+          '<div id="term"> <span id="termcli">' +
+          this.termPrev +
+          '</span><span class="cursor">&#9608</span></div>'
+        );
+
         $(document).keydown(this.keyCallback);
     };
 
@@ -37,7 +40,7 @@ rTerm = function (options) {
 
     this.updateTerm = function () {
         $("#termcli").html(this.oldInput + this.termPrev + this.input);
-        while ($("#term").height() > this.height) 
+        while ($("#term").height() > this.height)
         {
             this.delFristString();
             $("#termcli").html(this.oldInput + this.termPrev + this.input);
@@ -51,7 +54,7 @@ rTerm = function (options) {
     };
 
     this.keyCallback = (function(event) {
-        if ((event.which >= 48 && event.which <= 90) || 
+        if ((event.which >= 48 && event.which <= 90) ||
             (event.which >= 96 && event.which <= 107) ||
             event.which == 109 || event.which == 111 ||
             event.which == 32 || event.which == 182)
@@ -126,14 +129,14 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
 
-        for (var item in this.links.main) {
-            this.oldInput += '<a class="link" href="' + this.links.main[item] + '" target="_blank">' + item + '</a><br>';
+        for (var item in this.data.main) {
+            this.oldInput += '<a class="link" href="' + this.data.main[item] + '" target="_blank">' + item + '</a><br>';
             this.nStrings++;
         }
         if (args[1] == "a" || args[1] == "-a")
         {
-            for (var item in this.links.hidden) {
-                this.oldInput += '<a class="link" href="' + this.links.hidden[item] + '" target="_blank">' + item + '</a><br>';
+            for (var item in this.data.hidden) {
+                this.oldInput += '<a class="link" href="' + this.data.hidden[item] + '" target="_blank">' + item + '</a><br>';
                 this.nStrings++;
             }
         }
@@ -154,14 +157,14 @@ rTerm = function (options) {
             return;
         }
 
-        for (var item in this.links.main) {
+        for (var item in this.data.main) {
             if (dstname == String(item)) {
-                url = this.links.main[item];
+                url = this.data.main[item];
             }
         }
-        for (var item in this.links.hidden) {
+        for (var item in this.data.hidden) {
             if (dstname == String(item)) {
-                url = this.links.hidden[item];
+                url = this.data.hidden[item];
             }
         }
         if (url == '')
@@ -183,16 +186,17 @@ rTerm = function (options) {
         var url = '';
         var dstname = args[1];
 
-        for (var item in this.links.main) {
+        for (var item in this.data.main) {
             if (dstname == String(item))
             {
-                url = this.links.main[item];
+                url = this.data.main[item];
             }
         }
-        for (var item in this.links.hidden) {
+        for (var item in this.data.hidden) {
             if (dstname == String(item))
             {
-                url = this.links.hidden[item];            }
+                url = this.data.hidden[item];
+            }
         }
         if (url == '')
         {
@@ -212,21 +216,21 @@ rTerm = function (options) {
     }).bind(this);
 
     this.whoamiCallback = (function() {
-        this.oldInput += this.termPrev + this.input + '<br>' + this.links.whoami + '<br>';
+        this.oldInput += this.termPrev + this.input + '<br>' + this.data.whoami + '<br>';
         this.input = '';
         this.nStrings += 2;
         this.updateTerm();
     }).bind(this);
 
     this.unameCallback = (function() {
-        this.oldInput += this.termPrev + this.input + '<br>' + this.links.uname + '<br>';
+        this.oldInput += this.termPrev + this.input + '<br>' + this.data.uname + '<br>';
         this.input = '';
         this.nStrings += 2;
         this.updateTerm();
     }).bind(this);
 
     this.randomCallback = (function() {
-        this.oldInput += this.termPrev + this.input + '<br>' + this.links.uname + '<br>';
+        this.oldInput += this.termPrev + this.input + '<br>' + this.data.uname + '<br>';
         this.input = '';
         this.nStrings += 2;
         this.updateTerm();
