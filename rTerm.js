@@ -16,7 +16,7 @@ rTerm = function (options) {
     // Save string to server
     this.saveStrings = options.saveStrings || false;
     // How much time might take to print one character [ms]
-    this.chartime = 400;
+    this.chartime = 300;
 
 
     this.data = {};
@@ -38,7 +38,7 @@ rTerm = function (options) {
         $(document).keydown(this.keyCallback);
     };
 
-    this.termPrev = this.uhsername + ':~$  '
+    this.termPrev = '<b>' + this.uhsername + '</b>:~$  '
     this.oldInput = ''
     this.input = '';
     this.nStrings = 0;
