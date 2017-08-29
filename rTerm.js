@@ -15,6 +15,9 @@ rTerm = function (options) {
     this.maxStrings = options.maxStrings || 15;
     // Save string to server
     this.saveStrings = options.saveStrings || false;
+    // How much time might take to print one character [ms]
+    this.chartime = 400;
+
 
     this.data = {};
     this.clicked = false;
@@ -41,12 +44,30 @@ rTerm = function (options) {
     this.nStrings = 0;
 
     this.callUpstart = function () {
-      for (var command of this.data.upstart) {
-        for (var letter of command) {
-            this.addCallback(letter);
+        var delay = 0;
+        this.upcid = 0;
+        for (var cid in this.data.upstart) {
+            if (cid > 0) {
+                delay += (this.data.upstart[cid - 1].length + 1) * this.chartime;
+            }
+            setTimeout(function() {
+                this.enterCommand(this.data.upstart[this.upcid]);
+                this.upcid++;
+            }, delay);
         }
-        this.enterCallback();
-      }
+    };
+
+    this.enterCommand = function (command) {
+        this.currlid = 0;
+        for (var lid in command) {
+            setTimeout(function() {
+                this.addCallback(command[this.currlid]);
+                this.currlid++;
+            }, this.chartime * lid);
+        }
+        setTimeout(function() {
+            this.enterCallback();
+        }, this.chartime * command.length);
     };
 
     this.updateTerm = function () {
