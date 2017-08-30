@@ -9,3 +9,5 @@ Fake unix terminal for my personal page
 * whoami
 * idk
 * help
+## Example of usage
+https://kotobank.ch/~robolamp/
