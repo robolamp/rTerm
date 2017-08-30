@@ -16,7 +16,7 @@ rTerm = function (options) {
     // Save string to server
     this.saveStrings = options.saveStrings || false;
     // How much time might take to print one character [ms]
-    this.chartime = 300;
+    this.chartime = 250;
 
 
     this.data = {};
@@ -263,10 +263,6 @@ rTerm = function (options) {
             this.oldInput += item + '<br>';
             this.nStrings++;
         }
-        // this.oldInput += this.termPrev + this.input + '<br>' + this.data.whoami + '<br>';
-        // this.input = '';
-        // this.nStrings += 2;
-        // this.updateTerm();
         this.input = '';
         this.updateTerm();
     }).bind(this);
