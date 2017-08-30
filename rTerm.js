@@ -256,9 +256,18 @@ rTerm = function (options) {
     }).bind(this);
 
     this.whoamiCallback = (function() {
-        this.oldInput += this.termPrev + this.input + '<br>' + this.data.whoami + '<br>';
+        this.oldInput += this.termPrev + this.input + '<br>';
+        this.nStrings++;
+
+        for (var item of this.data.whoami) {
+            this.oldInput += item + '<br>';
+            this.nStrings++;
+        }
+        // this.oldInput += this.termPrev + this.input + '<br>' + this.data.whoami + '<br>';
+        // this.input = '';
+        // this.nStrings += 2;
+        // this.updateTerm();
         this.input = '';
-        this.nStrings += 2;
         this.updateTerm();
     }).bind(this);
 
