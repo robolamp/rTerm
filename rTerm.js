@@ -59,6 +59,12 @@ rTerm = function (options) {
 
     this.enterCommand = function (command) {
         this.currlid = 0;
+        var delays = [];
+        for (var lid in command) {
+          delays.push(this.chartime * (lid - 0.25 + 0.5 * Math.random()));
+        }
+        delays[0] = 0;
+
         for (var lid in command) {
             setTimeout(function() {
                 this.addCallback(command[this.currlid]);
