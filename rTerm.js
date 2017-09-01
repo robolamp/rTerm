@@ -3,7 +3,7 @@ Just a tool for links representation
 Needs a JQuery
 */
 rTerm = function (options) {
-    // A link to JSON with links and it's aliases
+    // A link to JSON with fs and cmd responses
     this.file = options.file;
     // An id of div where to place the terminal
     this.divid = options.div || 'rterm';
@@ -201,41 +201,27 @@ rTerm = function (options) {
         if (dstname[0] != "/") {
             dstname = this.cdir + "/" + dstname;
         }
-
-        if (dstname == "/dev/random" || dstname == "/dev/urandom") {
-            this.oldInput += this.termPrev + this.input + '<br>' + String(Math.random()) + '<br>';
-            this.input = '';
-            this.nStrings += 2;
-            this.updateTerm();
-            return;
-        }
-
         var data = this.data.fs;
 
         for (var folder of dstname.split("/").slice(1)) {
             data = data[folder];
         }
-
-        // for (var item in this.data.main) {
-        //     if (dstname == String(item)) {
-        //         url = this.data.main[item];
-        //     }
-        // }
-        // for (var item in this.data.hidden) {
-        //     if (dstname == String(item)) {
-        //         url = this.data.hidden[item];
-        //     }
-        // }
-        if (data == '')
-        {
+        if (data == '' || data === 'undefined') {
             this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
-            this.input = '';
-            this.nStrings += 2;
-            this.updateTerm();
-            return;
+        } else {
+            if (data.slice(0, 6) == "_call:") {
+                var args = data.slice(6, ).split(" ");
+                if (args[0] in this.funcMap) {
+                    this.funcMap[args[0]](args);
+                    return;
+                } else {
+                    this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
+                }
+            } else {
+                this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
+            }
         }
 
-        this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
         this.input = '';
         this.nStrings += 2;
         this.updateTerm();
@@ -294,7 +280,7 @@ rTerm = function (options) {
     }).bind(this);
 
     this.randomCallback = (function() {
-        this.oldInput += this.termPrev + this.input + '<br>' + this.data.uname + '<br>';
+        this.oldInput += this.termPrev + this.input + '<br>' + String(Math.random()) + '<br>';
         this.input = '';
         this.nStrings += 2;
         this.updateTerm();
@@ -319,7 +305,8 @@ rTerm = function (options) {
         "whoami": this.whoamiCallback,
         "uname": this.unameCallback,
         "idk": this.idkCallback,
-        "help": this.idkCallback
+        "help": this.idkCallback,
+        "random": this.randomCallback
     };
 
     this.init();
