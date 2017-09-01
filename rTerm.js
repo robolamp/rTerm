@@ -7,8 +7,12 @@ rTerm = function (options) {
     this.file = options.file;
     // An id of div where to place the terminal
     this.divid = options.div || 'rterm';
-    // Username@hostname
-    this.uhsername = options.uhsername || 'user@hostname';
+    // Username
+    this.username = options.username || 'user';
+    // Hostname
+    this.hostname = options.hostname || 'hostname';
+    // Starting path in fs
+    this.fsstart = options.fsstart || "/home/" + this.username;
     // High of the terminal
     this.height = options.height || 400;
     // Maximal number of strings
@@ -17,6 +21,9 @@ rTerm = function (options) {
     this.saveStrings = options.saveStrings || false;
     // How much time might take to print one character [ms]
     this.chartime = 250;
+
+    this.cdir = this.fsstart;
+    this.uhsername = this.username + '@' + this.hostname;
 
 
     this.data = {};
@@ -171,20 +178,18 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
 
-        for (var item in this.data.main) {
-            this.oldInput += '<a class="link" href="' + this.data.main[item] + '" target="_blank">' + item + '</a><br>';
-            this.nStrings++;
-        }
-        if (args[1] == "a" || args[1] == "-a")
-        {
-            for (var item in this.data.hidden) {
-                if (item[0] != "/") {
-                    this.oldInput += '<a class="link" href="' + this.data.hidden[item] + '" target="_blank">' + item + '</a><br>';
-                    this.nStrings++;
-                }
-            }
+        var dirData = this.data.fs;
+        for (var folder of this.cdir.split("/").slice(1)) {
+            dirData = dirData[folder];
         }
 
+        for (var item in dirData) {
+            if (item[0] != "." || args[1] == "-a")
+            {
+                this.oldInput += '<a class="link" href="' + dirData[item] + '" target="_blank">' + item + '</a><br>';
+                this.nStrings++;
+            }
+        }
         this.input = '';
         this.updateTerm();
     }).bind(this);
@@ -192,6 +197,10 @@ rTerm = function (options) {
     this.catCallback = (function(args) {
         var url = '';
         var dstname = args[1];
+
+        if (dstname[0] != "/") {
+            dstname = this.cdir + "/" + dstname;
+        }
 
         if (dstname == "/dev/random" || dstname == "/dev/urandom") {
             this.oldInput += this.termPrev + this.input + '<br>' + String(Math.random()) + '<br>';
@@ -201,17 +210,23 @@ rTerm = function (options) {
             return;
         }
 
-        for (var item in this.data.main) {
-            if (dstname == String(item)) {
-                url = this.data.main[item];
-            }
+        var data = this.data.fs;
+
+        for (var folder of dstname.split("/").slice(1)) {
+            data = data[folder];
         }
-        for (var item in this.data.hidden) {
-            if (dstname == String(item)) {
-                url = this.data.hidden[item];
-            }
-        }
-        if (url == '')
+
+        // for (var item in this.data.main) {
+        //     if (dstname == String(item)) {
+        //         url = this.data.main[item];
+        //     }
+        // }
+        // for (var item in this.data.hidden) {
+        //     if (dstname == String(item)) {
+        //         url = this.data.hidden[item];
+        //     }
+        // }
+        if (data == '')
         {
             this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
             this.input = '';
@@ -220,7 +235,7 @@ rTerm = function (options) {
             return;
         }
 
-        this.oldInput += this.termPrev + this.input + '<br>' + url + '<br>';
+        this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
         this.input = '';
         this.nStrings += 2;
         this.updateTerm();
