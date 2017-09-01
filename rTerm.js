@@ -205,20 +205,24 @@ rTerm = function (options) {
         for (var folder of lsdir.split("/").slice(1)) {
             dirData = dirData[folder];
         }
-
-        for (var item in dirData) {
-            if (!item.startsWith('.') || all)
-            {
-                if (typeof dirData[item] === 'string') {
-                    if (dirData[item].startsWith("_link:")) {
-                        this.oldInput += '<a class="link" href="' + dirData[item].slice(6, ) + '" target="_blank">' + item + '</a><br>';
+        if (typeof dirData === "undefined") {
+            this.oldInput += "ls: cannot access '" + lsdir + "': No such file or directory" + '<br>';
+            this.nStrings++;
+        } else {
+            for (var item in dirData) {
+                if (!item.startsWith('.') || all)
+                {
+                    if (typeof dirData[item] === 'string') {
+                        if (dirData[item].startsWith("_link:")) {
+                            this.oldInput += '<a class="link" href="' + dirData[item].slice(6, ) + '" target="_blank">' + item + '</a><br>';
+                        } else {
+                            this.oldInput += item + '<br>';
+                        }
                     } else {
-                        this.oldInput += item + '<br>';
+                        this.oldInput += '<font color="#729FCF">' + item + '</font><br>';
                     }
-                } else {
-                    this.oldInput += '<font color="#729FCF">' + item + '</font><br>';
+                    this.nStrings++;
                 }
-                this.nStrings++;
             }
         }
         this.input = '';
@@ -228,12 +232,10 @@ rTerm = function (options) {
     this.catCallback = (function(args) {
         var url = '';
         var dstname = args[1];
-
+        var data = this.data.fs;
         if (dstname[0] != "/") {
             dstname = this.cdir + "/" + dstname;
         }
-        var data = this.data.fs;
-
         for (var folder of dstname.split("/").slice(1)) {
             data = data[folder];
         }
