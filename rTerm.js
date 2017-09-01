@@ -178,15 +178,46 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
 
+        var all = false;
+        var list = false;
+
         var dirData = this.data.fs;
-        for (var folder of this.cdir.split("/").slice(1)) {
+        var lsdir = this.cdir;
+
+        for (var arg of args.slice(1)) {
+            if (!arg.startsWith("-")) {
+                if (arg.startsWith("/")) {
+                    lsdir = arg;
+                } else {
+                    lsdir = lsdir + "/" + arg;
+                }
+            } else {
+                if (arg == "-a") {
+                    all = true;
+                } else if (arg == "-l") {
+                    list = true;
+                }
+            }
+        }
+        if (lsdir.endsWith("/")) {
+            lsdir = lsdir.slice(0, -1);
+        }
+        for (var folder of lsdir.split("/").slice(1)) {
             dirData = dirData[folder];
         }
 
         for (var item in dirData) {
-            if (item[0] != "." || args[1] == "-a")
+            if (!item.startsWith('.') || all)
             {
-                this.oldInput += '<a class="link" href="' + dirData[item] + '" target="_blank">' + item + '</a><br>';
+                if (typeof dirData[item] === 'string') {
+                    if (dirData[item].startsWith("_link:")) {
+                        this.oldInput += '<a class="link" href="' + dirData[item].slice(6, ) + '" target="_blank">' + item + '</a><br>';
+                    } else {
+                        this.oldInput += item + '<br>';
+                    }
+                } else {
+                    this.oldInput += '<font color="#729FCF">' + item + '</font><br>';
+                }
                 this.nStrings++;
             }
         }
@@ -209,7 +240,7 @@ rTerm = function (options) {
         if (data == '' || data === 'undefined') {
             this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
         } else {
-            if (data.slice(0, 6) == "_call:") {
+            if (data.startsWith("_call:")) {
                 var args = data.slice(6, ).split(" ");
                 if (args[0] in this.funcMap) {
                     this.funcMap[args[0]](args);
