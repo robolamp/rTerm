@@ -103,6 +103,10 @@ rTerm = function (options) {
 	      {
 	         this.addCallback("-");
 	      }
+        if (event.which == 190)
+	      {
+	         this.addCallback(".");
+	      }
         if (event.which == 8 || event.which == 46 || event.which == 110)
         {
             this.delCallback();
