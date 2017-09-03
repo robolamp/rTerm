@@ -293,6 +293,13 @@ rTerm = function (options) {
         window.open(url, '_blank').focus();
     }).bind(this);
 
+    this.pwdCallback = (function(args) {
+      this.oldInput += this.termPrev + this.input + '<br>' + this.cdir + '<br>';
+      this.input = '';
+      this.nStrings += 2;
+      this.updateTerm();
+    }).bind(this);
+
     this.whoamiCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
@@ -339,7 +346,8 @@ rTerm = function (options) {
         "uname": this.unameCallback,
         "idk": this.idkCallback,
         "help": this.idkCallback,
-        "random": this.randomCallback
+        "random": this.randomCallback,
+        "pwd": this.pwdCallback
     };
 
     this.init();
