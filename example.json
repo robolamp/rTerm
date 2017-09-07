@@ -1,0 +1,14 @@
+{
+    "fs": {
+        "home": {
+            "user": {
+                "yandex": "_link:https://ya.ru",
+                "google": "_link:https://google.com",
+                ".yulia": "_link:https://github.com/robolamp"
+            }
+        }
+    },
+    "whoami": "rTerm",
+    "uname": "Made by Yulia Yakovleva",
+    "upstart": ["uname", "whoami", "ls"]
+}
