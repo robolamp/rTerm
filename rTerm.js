@@ -114,6 +114,10 @@ rTerm = function (options) {
 	      {
 	         this.addCallback(".");
 	      }
+        if (event.which == 192)
+	      {
+	         this.addCallback("~");
+	      }
         if (event.which == 8 || event.which == 46 || event.which == 110)
         {
             this.delCallback();
@@ -262,13 +266,23 @@ rTerm = function (options) {
 
     this.cdCallback = (function(args) {
         var url = '';
-        var dstname = args[1];
+        var dstname = '';
+        if (args.length < 2 || args[1] == " ") {
+            dstname = "~";
+        } else {
+            dstname = args[1];
+        }
         // var dir = this.cdir;
         var path = '';
         if (dstname.startsWith("/")) {
             path = dstname;
+        } else if (dstname.startsWith("~")) {
+            path = this.fsstart + "/" + dstname.slice(1);
         } else {
-            path =  this.cdir + "/" + dstname;
+            path = this.cdir + "/" + dstname;
+        }
+        if (path.endsWith("/")) {
+            path = path.slice(0, -1);
         }
         var pathArray = path.split("/").slice(1);
         var newPathArray = [];
