@@ -54,7 +54,7 @@ rTerm = function (options) {
     this.callUpstart = function () {
         var delay = 0;
         this.upcid = 0;
-        for (var cid in this.data.upstart) {
+        for (cid in this.data.upstart) {
             if (cid > 0) {
                 delay += (this.data.upstart[cid - 1].length + 1) * this.chartime;
             }
@@ -68,12 +68,12 @@ rTerm = function (options) {
     this.enterCommand = function (command) {
         this.currlid = 0;
         var delays = [];
-        for (var lid in command) {
+        for (lid in command) {
           delays.push(this.chartime * (lid - 0.25 + 0.5 * Math.random()));
         }
         delays[0] = 0;
 
-        for (var lid in command) {
+        for (lid in command) {
             setTimeout(function() {
                 this.addCallback(command[this.currlid]);
                 this.currlid++;
@@ -173,7 +173,7 @@ rTerm = function (options) {
         var dirData = this.data.fs;
         var lsdir = this.cdir;
 
-        for (var arg of args.slice(1)) {
+        for (arg of args.slice(1)) {
             if (!arg.startsWith("-")) {
                 if (arg.startsWith("/")) {
                     lsdir = arg;
@@ -191,14 +191,14 @@ rTerm = function (options) {
         if (lsdir.endsWith("/")) {
             lsdir = lsdir.slice(0, -1);
         }
-        for (var folder of lsdir.split("/").slice(1)) {
+        for (folder of lsdir.split("/").slice(1)) {
             dirData = dirData[folder];
         }
         if (typeof dirData === "undefined") {
             this.oldInput += "ls: cannot access '" + lsdir + "': No such file or directory" + '<br>';
             this.nStrings++;
         } else {
-            for (var item in dirData) {
+            for (item in dirData) {
                 if (!item.startsWith('.') || all)
                 {
                     if (typeof dirData[item] === 'string') {
@@ -225,7 +225,7 @@ rTerm = function (options) {
         if (dstname[0] != "/") {
             dstname = this.cdir + "/" + dstname;
         }
-        for (var folder of dstname.split("/").slice(1)) {
+        for (folder of dstname.split("/").slice(1)) {
             data = data[folder];
         }
         if (data == '' || typeof data === 'undefined') {
@@ -271,7 +271,7 @@ rTerm = function (options) {
         }
         var pathArray = path.split("/").slice(1);
         var newPathArray = [];
-        for (var i in pathArray) {
+        for (i in pathArray) {
             if (pathArray[i] == "..") {
                 newPathArray.splice(-1, 1);
             } else {
@@ -280,7 +280,7 @@ rTerm = function (options) {
         }
         path = "/" + newPathArray.join("/");
         var data = this.data.fs;
-        for (var folder of newPathArray) {
+        for (folder of newPathArray) {
             data = data[folder];
         }
 
@@ -327,7 +327,7 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
 
-        for (var item of this.data.whoami) {
+        for (item of this.data.whoami) {
             this.oldInput += item + '<br>';
             this.nStrings++;
         }
@@ -353,7 +353,7 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
 
-        for (var item in this.funcMap) {
+        for (item in this.funcMap) {
             this.oldInput += item + '<br>';
             this.nStrings++;
         }
