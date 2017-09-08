@@ -42,7 +42,8 @@ rTerm = function (options) {
           '</span><span class="cursor">&#9608</span></div>'
         );
 
-        $(document).keydown(this.keyCallback);
+        $(document).keypress(this.keyCallback);
+        $(document).keydown(this.specKeyCallback);
     };
 
     this.termPrev = '<b>' + this.uhsername + '</b>:~$  '
@@ -98,33 +99,17 @@ rTerm = function (options) {
         this.nStrings--;
     };
 
-    this.keyCallback = (function(event) {
-        if ((event.which >= 48 && event.which <= 90) ||
-            (event.which >= 96 && event.which <= 107) ||
-            event.which == 109 || event.which == 111 ||
-            event.which == 32 || event.which == 182)
-        {
-            this.addCallback(event.key);
-        }
-        if (event.which == 189)
-	      {
-	         this.addCallback("-");
-	      }
-        if (event.which == 190)
-	      {
-	         this.addCallback(".");
-	      }
-        if (event.which == 192)
-	      {
-	         this.addCallback("~");
-	      }
-        if (event.which == 8 || event.which == 46 || event.which == 110)
-        {
+    this.specKeyCallback = (function(event) {
+        if (event.which == 8 || event.which == 46 || event.which == 110) {
             this.delCallback();
-        }
-        if (event.which == 13)
-        {
+        } else if (event.which == 13) {
             this.enterCallback();
+        }
+    }).bind(this);
+
+    this.keyCallback = (function(event) {
+        if (event.which != 13) {
+            this.addCallback(String.fromCharCode(event.keyCode));
         }
     }).bind(this);
 
@@ -329,34 +314,6 @@ rTerm = function (options) {
         }
         this.updateTerm();
         return;
-
-        // for (var item in this.data.main) {
-        //     if (dstname == String(item))
-        //     {
-        //         url = this.data.main[item];
-        //     }
-        // }
-        // for (var item in this.data.hidden) {
-        //     if (dstname == String(item))
-        //     {
-        //         url = this.data.hidden[item];
-        //     }
-        // }
-        // if (url == '')
-        // {
-        //     this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
-        //     this.input = '';
-        //     this.nStrings += 2;
-        //     this.updateTerm();
-        //     return;
-        // }
-        //
-        this.oldInput += this.termPrev + this.input + '<br>';
-        this.input = '';
-        this.nStrings++;
-        this.updateTerm();
-
-        // window.open(url, '_blank').focus();
     }).bind(this);
 
     this.pwdCallback = (function(args) {
