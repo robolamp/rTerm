@@ -33,17 +33,16 @@ rTerm = function (options) {
         $.getJSON(this.file, (function(data) {
             this.data = data;
             if (this.data.upstart !== "undefined") {
-              this.callUpstart();
+                this.callUpstart();
             }
+            $(document).keypress(this.keyCallback);
+            $(document).keydown(this.specKeyCallback);
         }).bind(this));
 
         $("#" + this.divid).html(
           '<div id="term"> <span id="termcli">' + this.termPrev +
           '</span><span class="cursor">&#9608</span></div>'
         );
-
-        $(document).keypress(this.keyCallback);
-        $(document).keydown(this.specKeyCallback);
     };
 
     this.termPrev = '<b>' + this.uhsername + '</b>:~$  '
@@ -163,101 +162,7 @@ rTerm = function (options) {
         var xhttp = new XMLHttpRequest();
     }).bind(this);
 
-    this.lsCallback = (function(args) {
-        this.oldInput += this.termPrev + this.input + '<br>';
-        this.nStrings++;
-
-        var all = false;
-        var list = false;
-
-        var dirData = this.data.fs;
-        var lsdir = this.cdir;
-
-        for (arg of args.slice(1)) {
-            if (!arg.startsWith("-")) {
-                if (arg.startsWith("/")) {
-                    lsdir = arg;
-                } else {
-                    lsdir = lsdir + "/" + arg;
-                }
-            } else {
-                if (arg == "-a") {
-                    all = true;
-                } else if (arg == "-l") {
-                    list = true;
-                }
-            }
-        }
-        if (lsdir.endsWith("/")) {
-            lsdir = lsdir.slice(0, -1);
-        }
-        for (folder of lsdir.split("/").slice(1)) {
-            dirData = dirData[folder];
-        }
-        if (typeof dirData === "undefined") {
-            this.oldInput += "ls: cannot access '" + lsdir + "': No such file or directory" + '<br>';
-            this.nStrings++;
-        } else {
-            for (item in dirData) {
-                if (!item.startsWith('.') || all)
-                {
-                    if (typeof dirData[item] === 'string') {
-                        if (dirData[item].startsWith("_link:")) {
-                            this.oldInput += '<a class="link" href="' + dirData[item].slice(6, ) + '" target="_blank">' + item + '</a><br>';
-                        } else {
-                            this.oldInput += item + '<br>';
-                        }
-                    } else {
-                        this.oldInput += '<font color="#729FCF">' + item + '</font><br>';
-                    }
-                    this.nStrings++;
-                }
-            }
-        }
-        this.input = '';
-        this.updateTerm();
-    }).bind(this);
-
-    this.catCallback = (function(args) {
-        var url = '';
-        var dstname = args[1];
-        var data = this.data.fs;
-        if (dstname[0] != "/") {
-            dstname = this.cdir + "/" + dstname;
-        }
-        for (folder of dstname.split("/").slice(1)) {
-            data = data[folder];
-        }
-        if (data == '' || typeof data === 'undefined') {
-            this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
-        } else {
-            if (data.startsWith("_call:")) {
-                var args = data.slice(6, ).split(" ");
-                if (args[0] in this.funcMap) {
-                    this.funcMap[args[0]](args);
-                    return;
-                } else {
-                    this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
-                }
-            } else {
-                this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
-            }
-        }
-
-        this.input = '';
-        this.nStrings += 2;
-        this.updateTerm();
-    }).bind(this);
-
-    this.cdCallback = (function(args) {
-        var url = '';
-        var dstname = '';
-        if (args.length < 2 || args[1] == " ") {
-            dstname = "~";
-        } else {
-            dstname = args[1];
-        }
-        // var dir = this.cdir;
+    this.getByPath = (function(dstname) {
         var path = '';
         if (dstname.startsWith("/")) {
             path = dstname;
@@ -283,7 +188,89 @@ rTerm = function (options) {
         for (folder of newPathArray) {
             data = data[folder];
         }
+        return [data, path];
+    }).bind(this);
 
+    this.lsCallback = (function(args) {
+        this.oldInput += this.termPrev + this.input + '<br>';
+        this.nStrings++;
+
+        var all = false;
+        var list = false;
+
+        var lsdir = this.cdir;
+
+        for (arg of args.slice(1)) {
+            if (!arg.startsWith("-")) {
+                if (arg.startsWith("/")) {
+                    lsdir = arg;
+                } else {
+                    lsdir = lsdir + "/" + arg;
+                }
+            } else {
+                if (arg == "-a") {
+                    all = true;
+                } else if (arg == "-l") {
+                    list = true;
+                }
+            }
+        }
+        var dirData = this.getByPath(lsdir)[0];
+        if (typeof dirData === "undefined") {
+            this.oldInput += "ls: cannot access '" + lsdir + "': No such file or directory" + '<br>';
+            this.nStrings++;
+        } else {
+            for (item in dirData) {
+                if (!item.startsWith('.') || all)
+                {
+                    if (typeof dirData[item] === 'string') {
+                        if (dirData[item].startsWith("_link:")) {
+                            this.oldInput += '<a class="link" href="' + dirData[item].slice(6, ) + '" target="_blank">' + item + '</a><br>';
+                        } else {
+                            this.oldInput += item + '<br>';
+                        }
+                    } else {
+                        this.oldInput += '<font color="#729FCF">' + item + '</font><br>';
+                    }
+                    this.nStrings++;
+                }
+            }
+        }
+        this.input = '';
+        this.updateTerm();
+    }).bind(this);
+
+    this.catCallback = (function(args) {
+        var data = this.getByPath(args[1])[0];
+        if (data == '' || typeof data === 'undefined') {
+            this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
+        } else {
+            if (data.startsWith("_call:")) {
+                var args = data.slice(6, ).split(" ");
+                if (args[0] in this.funcMap) {
+                    this.funcMap[args[0]](args);
+                    return;
+                } else {
+                    this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
+                }
+            } else {
+                this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
+            }
+        }
+
+        this.input = '';
+        this.nStrings += 2;
+        this.updateTerm();
+    }).bind(this);
+
+    this.cdCallback = (function(args) {
+        var dstname = '';
+        if (args.length < 2 || args[1] == " ") {
+            dstname = "~";
+        } else {
+            dstname = args[1];
+        }
+        var [data, path] = this.getByPath(dstname);
         if (typeof data === 'undefined') {
             this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": No such file or directory" + '<br>';
             this.input = '';
