@@ -9,5 +9,8 @@ Fake unix terminal for my personal page
 * whoami
 * idk
 * help
+
+If you have some ideas how to implement a new command, please let me know!
+
 ## Example of usage
 https://kotobank.ch/~robolamp/
