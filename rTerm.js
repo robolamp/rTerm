@@ -19,6 +19,8 @@ rTerm = function (options) {
     this.maxStrings = options.maxStrings || 15;
     // Save string to server
     this.saveStrings = options.saveStrings || false;
+    // Logger app port
+    this.loggerAppPort = options.loggerAppPort || 9091;
     // How much time might take to print one character [ms]
     this.chartime = 250;
 
@@ -158,8 +160,10 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
-    this.sendString = (function() {
+    this.sendString = (function(cli_input) {
         var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "https://" + window.location.hostname + ":" + this.loggerAppPort , true);
+        xhttp.send(cli_input);
     }).bind(this);
 
     this.getByPath = (function(dstname) {
