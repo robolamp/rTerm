@@ -35,10 +35,16 @@ rTerm = function (options) {
         $.getJSON(this.file, (function(data) {
             this.data = data;
             if (this.data.upstart !== "undefined") {
-                this.callUpstart();
+                var delay = this.callUpstart();
+
+                setTimeout(function() {
+                    $(document).keypress(this.keyCallback);
+                    $(document).keydown(this.specKeyCallback);
+                }, delay);
+            } else {
+                $(document).keypress(this.keyCallback);
+                $(document).keydown(this.specKeyCallback);
             }
-            $(document).keypress(this.keyCallback);
-            $(document).keydown(this.specKeyCallback);
         }).bind(this));
 
         $("#" + this.divid).html(
@@ -64,6 +70,8 @@ rTerm = function (options) {
                 this.upcid++;
             }, delay);
         }
+        delay += (this.data.upstart[this.data.upstart.length - 1].length + 1) * this.chartime;
+        return delay;
     };
 
     this.enterCommand = function (command) {
