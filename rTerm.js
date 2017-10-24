@@ -35,6 +35,13 @@ rTerm = function (options) {
         $.getJSON(this.file, (function(data) {
             this.data = data;
 
+            window.onblur = function() {
+                window.blurred = true;
+            };
+            window.onfocus = function() {
+                window.blurred = false;
+            };
+
             if (this.data.upstart !== "undefined") {
                 var delay = this.callUpstart();
 
@@ -60,25 +67,21 @@ rTerm = function (options) {
     this.nStrings = 0;
 
     this.callUpstart = function () {
-
-        window.onblur = function() {
-            window.blurred = true;
-        };
-        window.onfocus = function() {
-            window.blurred = false;
-        };
-
         var delay = 0;
         this.upcid = 0;
+        this.upstartInterrupted = false;
+
         for (cid in this.data.upstart) {
             if (cid > 0) {
                 delay += (this.data.upstart[cid - 1].length + 1) * this.chartime;
             }
             setTimeout(function() {
-                if (window.blurred) {
-                    this.enterCommandImmediately(this.data.upstart[this.upcid]);
+                if (window.blurred && !this.upstartInterrupted) {
+                    this.callUpstartImmediately(this.data.upstart.slice(this.upcid));
+                    this.upstartInterrupted = true;
+                    return;
                 }
-                else {
+                else if (!this.upstartInterrupted) {
                     this.enterCommand(this.data.upstart[this.upcid]);
                 }
                 this.upcid++;
@@ -88,19 +91,20 @@ rTerm = function (options) {
         return delay;
     };
 
+    this.callUpstartImmediately = function (commands) {
+        for (c of commands) {
+            this.enterCommandImmediately(c);
+        }
+    };
+
     this.enterCommand = function (command) {
         this.currlid = 0;
         this.interruptCommand = false;
-        var delays = [];
-        for (lid in command) {
-          delays.push(this.chartime * (lid - 0.25 + 0.5 * Math.random()));
-        }
-        delays[0] = 0;
 
         for (lid in command) {
             setTimeout(function() {
                 if (window.blurred && !this.interruptCommand) {
-                    this.enterCommandImmediately(this.data.upstart.slice(this.upcid));
+                    this.enterCommandImmediately(command.slice(this.currlid));
                     this.interruptCommand = true;
                     return;
                 } else if (!this.interruptCommand) {
@@ -110,7 +114,9 @@ rTerm = function (options) {
             }, this.chartime * lid);
         }
         setTimeout(function() {
-            this.enterCallback();
+            if (!this.interruptCommand) {
+                this.enterCallback();
+            }
         }, this.chartime * command.length);
     };
 
