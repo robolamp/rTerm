@@ -152,7 +152,7 @@ rTerm = function (options) {
 
     this.keyCallback = (function(event) {
         if (event.which != 13) {
-            this.addCallback(String.fromCharCode(event.keyCode));
+            this.addCallback(event.key);
         }
     }).bind(this);
 
