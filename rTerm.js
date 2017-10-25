@@ -46,12 +46,10 @@ rTerm = function (options) {
                 var delay = this.callUpstart();
 
                 setTimeout(function() {
-                    $(document).keypress(this.keyCallback);
-                    $(document).keydown(this.specKeyCallback);
+                    $(document).keydown(this.keyCallback);
                 }, delay);
             } else {
-                $(document).keypress(this.keyCallback);
-                $(document).keydown(this.specKeyCallback);
+                $(document).keydown(this.keyCallback);
             }
         }).bind(this));
 
@@ -142,18 +140,15 @@ rTerm = function (options) {
         this.nStrings--;
     };
 
-    this.specKeyCallback = (function(event) {
-        if (event.which == 8 || event.which == 46 || event.which == 110) {
-            this.delCallback();
-        } else if (event.which == 13) {
-            this.enterCallback();
-        }
-    }).bind(this);
-
     this.keyCallback = (function(event) {
         if (event.which != 13 && event.which != 8 &&
             event.which != 46 && event.which != 110) {
             this.addCallback(event.key);
+        } else if (event.which == 8 || event.which == 46 ||
+                   event.which == 110) {
+            this.delCallback();
+        } else if (event.which == 13) {
+            this.enterCallback();
         }
     }).bind(this);
 
