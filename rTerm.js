@@ -199,9 +199,10 @@ rTerm = function (options) {
     }).bind(this);
 
     this.sendString = (function(cli_input) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "https://" + window.location.hostname + ":" + this.loggerAppPort , true);
-        xhttp.send(cli_input);
+        $.ajax({
+                url: "https://" + window.location.hostname + ":" + this.loggerAppPort + "?" + cli_input,
+                dataType: 'jsonp'
+            });
     }).bind(this);
 
     this.getByPath = (function(dstname) {
