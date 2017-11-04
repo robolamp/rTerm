@@ -141,8 +141,7 @@ rTerm = function (options) {
     };
 
     this.keyCallback = (function(event) {
-        if (event.which != 13 && event.which != 8 &&
-            event.which != 46 && event.which != 110) {
+        if (event.key.length == 1) {
             this.addCallback(event.key);
         } else if (event.which == 8 || event.which == 46 ||
                    event.which == 110) {
