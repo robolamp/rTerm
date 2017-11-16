@@ -47,11 +47,9 @@ rTerm = function (options) {
 
                 setTimeout(function() {
                     $(document).keydown(this.keyCallback);
-                    $("#terminput").focus();
                 }, delay);
             } else {
                 $(document).keydown(this.keyCallback);
-                $("#terminput").focus();
             }
         }).bind(this));
 
