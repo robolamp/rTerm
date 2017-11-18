@@ -4,7 +4,7 @@
     -moz-animation:1s blinker linear infinite;
 
     text-align: center;
-    font-size: 12px;
+    font-size: 14px;
     font-family: monospace, sans-serif;
     color: #999999;
 }
@@ -32,7 +32,7 @@
     display: inline-block;
     width:750px;
     max-width:750px;
-    font-size: 12px;
+    font-size: 14px;
     font-family: monospace, sans-serif;
     color: #999999;
 }
