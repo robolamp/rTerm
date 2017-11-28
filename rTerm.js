@@ -390,6 +390,16 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    this.exitCallback = (function() {
+      this.oldInput += this.termPrev + this.input + '<br>';
+      this.nStrings++;
+
+      $(document).unbind("keydown", this.keyCallback);
+
+      this.input = '';
+      this.updateTerm();
+    }).bind(this);
+
     this.funcMap = {
         "ls": this.lsCallback,
         "cd": this.cdCallback,
@@ -399,7 +409,8 @@ rTerm = function (options) {
         "idk": this.idkCallback,
         "help": this.idkCallback,
         "random": this.randomCallback,
-        "pwd": this.pwdCallback
+        "pwd": this.pwdCallback,
+        "exit": this.exitCallback
     };
 
     this.init();
