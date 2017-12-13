@@ -391,13 +391,24 @@ rTerm = function (options) {
     }).bind(this);
 
     this.exitCallback = (function() {
-      this.oldInput += this.termPrev + this.input + '<br>';
-      this.nStrings++;
+        this.oldInput += this.termPrev + this.input + '<br>';
+        this.nStrings++;
 
-      $(document).unbind("keydown", this.keyCallback);
+        $(document).unbind("keydown", this.keyCallback);
 
-      this.input = '';
-      this.updateTerm();
+        this.input = '';
+        this.updateTerm();
+    }).bind(this);
+
+    this.echoCallback = (function() {
+
+        var data = this.input.slice(5);
+
+        this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
+
+        this.nStrings += 2;
+        this.input = '';
+        this.updateTerm();
     }).bind(this);
 
     this.funcMap = {
@@ -410,7 +421,8 @@ rTerm = function (options) {
         "help": this.idkCallback,
         "random": this.randomCallback,
         "pwd": this.pwdCallback,
-        "exit": this.exitCallback
+        "exit": this.exitCallback,
+        "echo": this.echoCallback
     };
 
     this.init();
