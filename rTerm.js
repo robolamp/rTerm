@@ -220,7 +220,13 @@ rTerm = function (options) {
         var newPathArray = [];
         for (i in pathArray) {
             if (pathArray[i] == "..") {
-                newPathArray.splice(-1, 1);
+                if (newPathArray.length > 0) {
+                    newPathArray.splice(-1, 1);
+                } else {
+                    continue;
+                }
+            } else if (pathArray[i] == ".") {
+                continue;
             } else {
                 newPathArray.push(pathArray[i]);
             }
@@ -401,9 +407,7 @@ rTerm = function (options) {
     }).bind(this);
 
     this.echoCallback = (function() {
-
         var data = this.input.slice(5);
-
         this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
 
         this.nStrings += 2;
