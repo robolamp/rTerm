@@ -9,6 +9,10 @@ Fake unix terminal for my personal page
 * whoami
 * idk
 * help
+* pwd
+* echo
+* exit
+* ...and something else!
 
 If you have some ideas how to implement a new command, please let me know!
 
