@@ -415,6 +415,13 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    this.hiCallback = (function() {
+        this.oldInput += this.termPrev + this.input + '<br>hiii!<br>';
+        this.nStrings += 2;
+        this.input = '';
+        this.updateTerm();
+    }).bind(this);
+
     this.funcMap = {
         "ls": this.lsCallback,
         "cd": this.cdCallback,
@@ -426,7 +433,8 @@ rTerm = function (options) {
         "random": this.randomCallback,
         "pwd": this.pwdCallback,
         "exit": this.exitCallback,
-        "echo": this.echoCallback
+        "echo": this.echoCallback,
+        "hi": this.hiCallback
     };
 
     this.init();
