@@ -239,6 +239,13 @@ rTerm = function (options) {
         return [data, path];
     }).bind(this);
 
+    /*
+     * List files in the directory
+     * Usage: ls [OPTION]... [FILE]...
+     * Options:
+     *    -a    do not ignore entries starting with .
+     *    -l    use a long listing format [TODO]
+     */
     this.lsCallback = (function(args) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
@@ -288,6 +295,10 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Concatenate FILE to standard output.
+     * Usage: cat [OPTION]... [FILE]...
+     */
     this.catCallback = (function(args) {
         var data = this.getByPath(args[1])[0];
         if (data == '' || typeof data === 'undefined') {
@@ -311,6 +322,11 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * If DIR is a directory: change current working directory to DIR;
+     * if DIR is a link: open URL in a new tab.
+     * Usage: cd [DIR]
+     */
     this.cdCallback = (function(args) {
         var dstname = '';
         if (args.length < 2 || args[1] == " ") {
@@ -351,6 +367,10 @@ rTerm = function (options) {
         return;
     }).bind(this);
 
+    /*
+     * Show full pathname of the current working directory
+     * Usage: pwd
+     */
     this.pwdCallback = (function(args) {
       this.oldInput += this.termPrev + this.input + '<br>' + this.cdir + '<br>';
       this.input = '';
@@ -358,6 +378,10 @@ rTerm = function (options) {
       this.updateTerm();
     }).bind(this);
 
+    /*
+     * Show whoami info from this.data.whoami
+     * Usage: whoami
+     */
     this.whoamiCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
@@ -370,6 +394,10 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Show uname info from this.data.uname
+     * Usage: uname
+     */
     this.unameCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>' + this.data.uname + '<br>';
         this.input = '';
@@ -377,6 +405,10 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Generate random float-pointed number in [0, 1)
+     * Usage: random
+     */
     this.randomCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>' + String(Math.random()) + '<br>';
         this.input = '';
@@ -384,6 +416,10 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Show all available commands list
+     * Usage: idk
+     */
     this.idkCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
@@ -396,6 +432,10 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Exit console (deactivate keys callbacks)
+     * Usage: exit
+     */
     this.exitCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
@@ -406,6 +446,10 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Print the STRING passed as argument
+     * Usage: echo [STRING]
+     */
     this.echoCallback = (function() {
         var data = this.input.slice(5);
         this.oldInput += this.termPrev + this.input + '<br>' + data + '<br>';
@@ -415,6 +459,10 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Just print hiii!
+     * Usage: hi
+     */
     this.hiCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>hiii!<br>';
         this.nStrings += 2;
