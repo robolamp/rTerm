@@ -1,7 +1,7 @@
 /*
-Just a tool for links representation
-Needs a JQuery
-*/
+ * Just a tool for links representation
+ * Needs a JQuery
+ */
 rTerm = function (options) {
     // A link to JSON with fs and cmd responses
     this.file = options.file;
@@ -23,14 +23,14 @@ rTerm = function (options) {
     this.loggerAppPort = options.loggerAppPort || 9091;
     // How much time might take to print one character [ms]
     this.chartime = 250;
-
+    // Current dirrectory
     this.cdir = this.fsstart;
     this.uhsername = this.username + '@' + this.hostname;
-
 
     this.data = {};
     this.clicked = false;
 
+    // Load data, call upstart commands and set callbacks
     this.init = function() {
         $.getJSON(this.file, (function(data) {
             this.data = data;
@@ -64,6 +64,7 @@ rTerm = function (options) {
     this.input = '';
     this.nStrings = 0;
 
+    // Call initial commands from data.upstart with typing delays
     this.callUpstart = function () {
         var delay = 0;
         this.upcid = 0;
@@ -89,12 +90,14 @@ rTerm = function (options) {
         return delay;
     };
 
+    // Call upstart commands without delays
     this.callUpstartImmediately = function (commands) {
         for (c of commands) {
             this.enterCommandImmediately(c);
         }
     };
 
+    // Enter command with typing delays
     this.enterCommand = function (command) {
         this.currlid = 0;
         this.interruptCommand = false;
@@ -118,6 +121,7 @@ rTerm = function (options) {
         }, this.chartime * command.length);
     };
 
+    // Enter command without delays
     this.enterCommandImmediately = function (command) {
         for (l of command) {
             this.addCallback(l);
@@ -125,6 +129,7 @@ rTerm = function (options) {
         this.enterCallback();
     };
 
+    // Update #termcli with new input
     this.updateTerm = function () {
         $("#termcli").html(this.oldInput + this.termPrev + this.input);
         while ($("#term").height() > this.height)
@@ -134,6 +139,7 @@ rTerm = function (options) {
         }
     };
 
+    // Delete the oldest sting
     this.delFristString = function () {
         var cutPos = this.oldInput.indexOf("<br>");
         this.oldInput = this.oldInput.slice(cutPos + 4, -4) + '<br>';
@@ -151,16 +157,19 @@ rTerm = function (options) {
         }
     }).bind(this);
 
+    // Add character to input
     this.addCallback = (function (key) {
         this.input += key;
         this.updateTerm();
     }).bind(this);
 
+    // Delete last character from input
     this.delCallback = (function () {
         this.input = this.input.slice(0, -1);
         this.updateTerm();
     }).bind(this);
 
+    // Call command from input
     this.enterCallback = (function () {
         if (this.input == '')
         {
@@ -184,12 +193,18 @@ rTerm = function (options) {
         }
     }).bind(this);
 
+    /*
+     * Call empty command
+     */
     this.emptyCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Call unknown command
+     */
     this.unknownCallback = (function() {
         this.oldInput += this.termPrev + this.input + '<br>' + this.input + ": command not found" + '<br>';
         this.input = '';
@@ -197,6 +212,7 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    // Send string to logger
     this.sendString = (function(cli_input) {
         $.ajax({
                 url: "https://" + window.location.hostname + ":" + this.loggerAppPort + "?" + cli_input,
@@ -204,6 +220,7 @@ rTerm = function (options) {
             });
     }).bind(this);
 
+    // Get object by path
     this.getByPath = (function(dstname) {
         var path = '';
         if (dstname.startsWith("/")) {
