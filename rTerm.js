@@ -487,6 +487,17 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Just print man page request
+     * Usage: man
+     */
+    this.manCallback = (function() {
+        this.oldInput += this.termPrev + this.input + '<br>What manual page do you want?<br>';
+        this.nStrings += 2;
+        this.input = '';
+        this.updateTerm();
+    }).bind(this);
+
     this.funcMap = {
         "ls": this.lsCallback,
         "cd": this.cdCallback,
@@ -499,7 +510,8 @@ rTerm = function (options) {
         "pwd": this.pwdCallback,
         "exit": this.exitCallback,
         "echo": this.echoCallback,
-        "hi": this.hiCallback
+        "hi": this.hiCallback,
+        "man": this.manCallback
     };
 
     this.init();
