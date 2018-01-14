@@ -498,6 +498,20 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Just type "Oh you!" and log out
+     * Usage: ohyou
+     */
+     this.ohYouCallback = (function() {
+         this.oldInput += this.termPrev + this.input + '<br>oh you!<br>';
+         this.nStrings += 2;
+
+         $(document).unbind("keydown", this.keyCallback);
+
+         this.input = '';
+         this.updateTerm();
+     }).bind(this);
+
     this.funcMap = {
         "ls": this.lsCallback,
         "cd": this.cdCallback,
@@ -511,7 +525,9 @@ rTerm = function (options) {
         "exit": this.exitCallback,
         "echo": this.echoCallback,
         "hi": this.hiCallback,
-        "man": this.manCallback
+        "man": this.manCallback,
+        "ohyou": this.ohYouCallback,
+        "fuck": this.ohYouCallback
     };
 
     this.init();
