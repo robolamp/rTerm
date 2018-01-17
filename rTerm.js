@@ -512,6 +512,19 @@ rTerm = function (options) {
          this.updateTerm();
      }).bind(this);
 
+     /*
+      * Clear screen and log out
+      * Usage: poweroff
+      */
+    this.poweroffCallback = (function() {
+        $(document).unbind("keydown", this.keyCallback);
+        this.termPrev = '';
+        this.oldInput = '';
+        this.input = '';
+        this.nStrings = 0;
+        this.updateTerm();
+    }).bind(this);
+
     this.funcMap = {
         "ls": this.lsCallback,
         "cd": this.cdCallback,
@@ -527,7 +540,8 @@ rTerm = function (options) {
         "hi": this.hiCallback,
         "man": this.manCallback,
         "ohyou": this.ohYouCallback,
-        "fuck": this.ohYouCallback
+        "fuck": this.ohYouCallback,
+        "poweroff": this.poweroffCallback
     };
 
     this.init();
