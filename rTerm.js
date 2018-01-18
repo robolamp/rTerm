@@ -540,6 +540,20 @@ rTerm = function (options) {
         }, 1000);
     }).bind(this);
 
+    /*
+     * Call COMMAND as superuser
+     * Usage: sudo [COMMAND]
+     */
+    this.sudoCallback = (function(args) {
+        if (args[0] in this.funcMap) {
+            console.log(args.slice(1));
+            this.funcMap[args[0]](args.slice(1));
+        }
+        else {
+            this.unknownCallback();
+        }
+    }).bind(this);
+
     this.funcMap = {
         "ls": this.lsCallback,
         "cd": this.cdCallback,
@@ -557,7 +571,8 @@ rTerm = function (options) {
         "ohyou": this.ohYouCallback,
         "fuck": this.ohYouCallback,
         "poweroff": this.poweroffCallback,
-        "reboot": this.rebootCallback
+        "reboot": this.rebootCallback,
+        "sudo": this.sudoCallback
     };
 
     this.init();
