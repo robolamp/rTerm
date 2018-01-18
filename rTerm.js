@@ -529,12 +529,16 @@ rTerm = function (options) {
      * Clear screen
      * Usage: reboot
      */
-   this.rebootCallback = (function() {
-       this.oldInput = '';
-       this.input = '';
-       this.nStrings = 0;
-       this.updateTerm();
-   }).bind(this);
+    this.rebootCallback = (function() {
+        $(document).unbind("keydown", this.keyCallback);
+        setTimeout(function() {
+           this.oldInput = '';
+           this.input = '';
+           this.nStrings = 0;
+           this.updateTerm();
+           $(document).keydown(this.keyCallback);
+        }, 1000);
+    }).bind(this);
 
     this.funcMap = {
         "ls": this.lsCallback,
