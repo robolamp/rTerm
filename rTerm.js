@@ -525,6 +525,17 @@ rTerm = function (options) {
         this.updateTerm();
     }).bind(this);
 
+    /*
+     * Clear screen
+     * Usage: reboot
+     */
+   this.rebootCallback = (function() {
+       this.oldInput = '';
+       this.input = '';
+       this.nStrings = 0;
+       this.updateTerm();
+   }).bind(this);
+
     this.funcMap = {
         "ls": this.lsCallback,
         "cd": this.cdCallback,
@@ -541,7 +552,8 @@ rTerm = function (options) {
         "man": this.manCallback,
         "ohyou": this.ohYouCallback,
         "fuck": this.ohYouCallback,
-        "poweroff": this.poweroffCallback
+        "poweroff": this.poweroffCallback,
+        "reboot": this.rebootCallback
     };
 
     this.init();
