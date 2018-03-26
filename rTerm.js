@@ -555,17 +555,29 @@ rTerm = function (options) {
 
     /*
      * Imitates apt
+     * Usage apt [OPTION] [PACKET]
      */
     this.aptCallback = (function(args) {
-        if (args.length == 0) {
+        if (args.length == 1) {
             this.oldInput += this.termPrev + this.input
                 + '<br>apt 1.2.34 (amd64)'
                 + '<br>Usage: apt [options] command'
-                + '<br>                   This APT has Super Cow Powers.<br>';
+                + '<br>This APT has Super Cow Powers.<br>';
+            this.nStrings += 5;
+        } else if (args[1] == 'update') {
+            this.oldInput += this.termPrev + this.input
+                + '<br>Reading package lists... Done'
+                + '<br>E: Could not open lock file /var/lib/apt/lists/lock - open (13: Permission denied)'
+                + '<br>E: Unable to lock directory /var/lib/apt/lists/<br>';
             this.nStrings += 4;
+        } else if (args[1] == 'upgrade') {
+            this.oldInput += this.termPrev + this.input
+                + '<br>E: Could not open lock file /var/lib/dpkg/lock - open (13: Permission denied)'
+                + '<br>E: Unable to lock the administration directory (/var/lib/dpkg/), are you root?<br>';
+            this.nStrings += 3;
         } else {
             this.oldInput += this.termPrev + this.input
-                + '<br>E: Invalid operation' + args +'<br>';
+                + '<br>E: Invalid operation ' + args[1] +'<br>';
             this.nStrings += 2;
         }
         this.input = '';
