@@ -563,7 +563,7 @@ rTerm = function (options) {
                 + '<br>apt 1.2.34 (amd64)'
                 + '<br>Usage: apt [options] command'
                 + '<br>This APT has Super Cow Powers.<br>';
-            this.nStrings += 5;
+            this.nStrings += 4;
         } else if (args[1] == 'update') {
             this.oldInput += this.termPrev + this.input
                 + '<br>Reading package lists... Done'
@@ -575,6 +575,13 @@ rTerm = function (options) {
                 + '<br>E: Could not open lock file /var/lib/dpkg/lock - open (13: Permission denied)'
                 + '<br>E: Unable to lock the administration directory (/var/lib/dpkg/), are you root?<br>';
             this.nStrings += 3;
+        } else if (args[1] == 'install') {
+            this.oldInput += this.termPrev + this.input
+                + '<br>Reading package lists... Done'
+                + '<br>Building dependency tree'
+                + '<br>Reading state information... Done'
+                + '<br>E: Unable to locate package ' + args[2] +'<br>';
+            this.nStrings += 5;
         } else {
             this.oldInput += this.termPrev + this.input
                 + '<br>E: Invalid operation ' + args[1] +'<br>';
