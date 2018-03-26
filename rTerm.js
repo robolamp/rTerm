@@ -546,12 +546,30 @@ rTerm = function (options) {
      */
     this.sudoCallback = (function(args) {
         if (args[0] in this.funcMap) {
-            console.log(args.slice(1));
             this.funcMap[args[0]](args.slice(1));
         }
         else {
             this.unknownCallback();
         }
+    }).bind(this);
+
+    /*
+     * Imitates apt
+     */
+    this.aptCallback = (function(args) {
+        if (args.length == 0) {
+            this.oldInput += this.termPrev + this.input
+                + '<br>apt 1.2.34 (amd64)'
+                + '<br>Usage: apt [options] command'
+                + '<br>                   This APT has Super Cow Powers.<br>';
+            this.nStrings += 4;
+        } else {
+            this.oldInput += this.termPrev + this.input
+                + '<br>E: Invalid operation' + args +'<br>';
+            this.nStrings += 2;
+        }
+        this.input = '';
+        this.updateTerm();
     }).bind(this);
 
     this.funcMap = {
@@ -572,7 +590,9 @@ rTerm = function (options) {
         "fuck": this.ohYouCallback,
         "poweroff": this.poweroffCallback,
         "reboot": this.rebootCallback,
-        "sudo": this.sudoCallback
+        "sudo": this.sudoCallback,
+        "apt": this.aptCallback,
+        "apt-get": this.aptCallback
     };
 
     this.init();
