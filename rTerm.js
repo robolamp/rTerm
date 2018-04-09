@@ -435,17 +435,20 @@ rTerm = function (options) {
 
     /*
      * Show all available commands list
-     * Usage: idk
+     * Usage: help
      */
-    this.idkCallback = (function() {
-        this.oldInput += this.termPrev + this.input + '<br>';
-        this.nStrings++;
+    this.helpCallback = (function() {
+        this.oldInput += this.termPrev + this.input
+                      + '<br>GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)'
+                      + '<br>These shell commands are defined internally.  Type "help" to see this list.<br><br>';
+        this.input = '';
+        this.nStrings += 4;
 
         for (item in this.funcMap) {
             this.oldInput += item + '<br>';
             this.nStrings++;
         }
-        this.input = '';
+
         this.updateTerm();
     }).bind(this);
 
@@ -597,8 +600,7 @@ rTerm = function (options) {
         "cat": this.catCallback,
         "whoami": this.whoamiCallback,
         "uname": this.unameCallback,
-        "idk": this.idkCallback,
-        "help": this.idkCallback,
+        "help": this.helpCallback,
         "random": this.randomCallback,
         "pwd": this.pwdCallback,
         "exit": this.exitCallback,
