@@ -474,14 +474,16 @@ rTerm = function (options) {
     this.helpCallback = (function() {
         this.oldInput += this.termPrev + this.input
                       + '<br>GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)'
-                      + '<br>These shell commands are defined internally.  Type "help" to see this list.<br><br>';
-        this.input = '';
-        this.nStrings += 4;
+                      + '<br>These shell commands are defined internally.  Type "help" to see this list.<br><br>'
+                      + '<br>cd [-L|[-P [-e]] [-@]] [dir]'
+                      + '<br>echo [-neE] [arg ...] '
+                      + '<br>exit [n]'
+                      + '<br>help [-dms] [pattern ...]'
+                      + '<br>time [-p] pipeline'
+                      + '<br>times';
 
-        for (item in this.funcMap) {
-            this.oldInput += item + '<br>';
-            this.nStrings++;
-        }
+        this.input = '';
+        this.nStrings += 10;
 
         this.updateTerm();
     }).bind(this);
