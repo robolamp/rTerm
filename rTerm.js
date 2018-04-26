@@ -548,8 +548,14 @@ rTerm = function (options) {
      * Usage: sudo [COMMAND]
      */
     this.sudoCallback = (function(args) {
-        if (args[0] in this.funcMap) {
-            this.funcMap[args[0]](args.slice(1));
+        if (args.length == 1) {
+            this.oldInput += this.termPrev + this.input
+                + '<br>usage: sudo [options] [command]<br>';
+            this.nStrings += 2;
+            this.input = '';
+            this.updateTerm();
+        } else if (args[1] in this.funcMap) {
+            this.funcMap[args[1]](args.slice(1));
         }
         else {
             this.unknownCallback();
