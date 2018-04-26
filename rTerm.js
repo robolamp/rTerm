@@ -31,6 +31,7 @@ rTerm = function (options) {
 
     this.data = {};
     this.clicked = false;
+    this.commandHistory = [];
 
     // Load data, call upstart commands and set callbacks
     this.init = function() {
@@ -61,7 +62,6 @@ rTerm = function (options) {
         );
     };
 
-    this.history = [];
     this.termPrev = '<b>' + this.uhsername + '</b>:~$  '
     this.oldInput = ''
     this.input = '';
@@ -188,10 +188,10 @@ rTerm = function (options) {
             {
                 this.sendString(this.input);
             }
-            this.history.push(this.input);
-            if (this.history.length > this.maxHistoryLength)
+            this.commandHistory.push(this.input);
+            if (this.commandHistory.length > this.maxHistoryLength)
             {
-                this.history.shift();
+                this.commandHistory.shift();
             }
             var args = this.input.split(" ");
             if (args[0] in this.funcMap)
