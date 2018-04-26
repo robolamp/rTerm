@@ -31,7 +31,6 @@ rTerm = function (options) {
 
     this.data = {};
     this.clicked = false;
-    this.commandHistory = [];
 
     // Load data, call upstart commands and set callbacks
     this.init = function() {
@@ -66,6 +65,8 @@ rTerm = function (options) {
     this.oldInput = ''
     this.input = '';
     this.nStrings = 0;
+    this.commandHistory = [];
+    this.commandHistoryIterator = 0;
 
     // Call initial commands from data.upstart with typing delays
     this.callUpstart = function () {
@@ -188,10 +189,11 @@ rTerm = function (options) {
             {
                 this.sendString(this.input);
             }
-            this.commandHistory.push(this.input);
+            this.commandHistoryIterator = 0;
+            this.commandHistory.unshift(this.input);
             if (this.commandHistory.length > this.maxHistoryLength)
             {
-                this.commandHistory.shift();
+                this.commandHistory.pop();
             }
             var args = this.input.split(" ");
             if (args[0] in this.funcMap)
@@ -207,12 +209,22 @@ rTerm = function (options) {
 
     // Show previous command from history
     this.upCallback = (function() {
-      // TODO: implement
+      if (this.commandHistoryIterator < this.commandHistory.length - 1)
+      {
+          this.commandHistoryIterator++;
+      }
+      this.input = this.commandHistory[this.commandHistoryIterator];
+      this.updateTerm();
     }).bind(this);
 
     // Show next command from history
     this.downCallback = (function() {
-      // TODO: implement
+      if (this.commandHistoryIterator > 0)
+      {
+          this.commandHistoryIterator--;
+      }
+      this.input = this.commandHistory[this.commandHistoryIterator];
+      this.updateTerm();
     }).bind(this);
 
     /*
