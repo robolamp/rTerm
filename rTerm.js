@@ -480,7 +480,7 @@ rTerm = function (options) {
                       + '<br>exit [n]'
                       + '<br>help [-dms] [pattern ...]'
                       + '<br>time [-p] pipeline'
-                      + '<br>times';
+                      + '<br>times<br>';
 
         this.input = '';
         this.nStrings += 10;
