@@ -21,6 +21,8 @@ rTerm = function (options) {
     this.saveStrings = options.saveStrings || false;
     // Logger app port
     this.loggerAppPort = options.loggerAppPort || 9091;
+    // How much commands should be stored at history
+    this.maxHistoryLength = options.maxHistoryLength || 20;
     // How much time might take to print one character [ms]
     this.chartime = 250;
     // Current dirrectory
@@ -59,6 +61,7 @@ rTerm = function (options) {
         );
     };
 
+    this.history = [];
     this.termPrev = '<b>' + this.uhsername + '</b>:~$  '
     this.oldInput = ''
     this.input = '';
@@ -154,6 +157,10 @@ rTerm = function (options) {
             this.delCallback();
         } else if (event.which == 13) {
             this.enterCallback();
+        } else if (event.which == 38) {
+            this.upCallback();
+        } else if (event.which == 40) {
+            this.downCallback();
         }
     }).bind(this);
 
@@ -181,6 +188,11 @@ rTerm = function (options) {
             {
                 this.sendString(this.input);
             }
+            this.history.push(this.input);
+            if (this.history.length > this.maxHistoryLength)
+            {
+                this.history.shift();
+            }
             var args = this.input.split(" ");
             if (args[0] in this.funcMap)
             {
@@ -191,6 +203,16 @@ rTerm = function (options) {
                 this.unknownCallback();
             }
         }
+    }).bind(this);
+
+    // Show previous command from history
+    this.upCallback = (function() {
+      // TODO: implement
+    }).bind(this);
+
+    // Show next command from history
+    this.downCallback = (function() {
+      // TODO: implement
     }).bind(this);
 
     /*
