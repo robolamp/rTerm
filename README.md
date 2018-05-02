@@ -26,7 +26,7 @@ Fake unix terminal for my personal page
      Usage: whoami
 
 ### help
-     Show all available commands list
+     Show GNU bash help
      Usage: help
 
 ### pwd
