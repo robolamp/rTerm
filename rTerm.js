@@ -599,6 +599,19 @@ rTerm = function (options) {
     }).bind(this);
 
     /*
+     * Imitates df
+     * Usage df [OPTION]
+     */
+    this.dfCallback = (function(args) {
+        this.oldInput += this.termPrev + this.input
+            + '<br>Filesystem  1K-blocks  Used    Available  Use%  Mounted on'
+            + '<br>/dev/sda1   514229     514229          0  100%  /boot<br>';
+        this.nStrings += 3;
+        this.input = '';
+        this.updateTerm();
+    }).bind(this);
+
+    /*
      * Imitates apt
      * Usage apt [OPTION] [PACKET]
      */
@@ -655,7 +668,8 @@ rTerm = function (options) {
         "reboot": this.rebootCallback,
         "sudo": this.sudoCallback,
         "apt": this.aptCallback,
-        "apt-get": this.aptCallback
+        "apt-get": this.aptCallback,
+        "df": this.dfCallback
     };
 
     this.init();
