@@ -1,6 +1,5 @@
 /*
  * Just a tool for links representation
- * Needs a JQuery
  */
 rTerm = function (options) {
     // A link to JSON with fs and cmd responses
@@ -34,31 +33,34 @@ rTerm = function (options) {
 
     // Load data, call upstart commands and set callbacks
     this.init = function() {
-        $.getJSON(this.file, (function(data) {
-            this.data = data;
+      request = new XMLHttpRequest();
+      request.open("GET", this.file, true);
+      request.onload = (function() {
+        if (request.status >= 200 && request.status < 400) {
+          this.data = JSON.parse(request.response);
 
-            window.onblur = function() {
-                window.blurred = true;
-            };
-            window.onfocus = function() {
-                window.blurred = false;
-            };
+          window.onblur = function() {
+              window.blurred = true;
+          };
+          window.onfocus = function() {
+              window.blurred = false;
+          };
 
-            if (this.data.upstart !== "undefined") {
-                var delay = this.callUpstart();
+          if (this.data.upstart !== "undefined") {
+              var delay = this.callUpstart();
 
-                setTimeout(function() {
-                    $(document).keydown(this.keyCallback);
-                }, delay);
-            } else {
-                $(document).keydown(this.keyCallback);
-            }
-        }).bind(this));
+              setTimeout(function() {
+                document.addEventListener("keydown", this.keyCallback);
+              }, delay);
+          } else {
+            document.addEventListener("keydown", this.keyCallback);
+          }
+        }
+      }).bind(this);
+      request.send();
 
-        $("#" + this.divid).html(
-          '<div id="term"> <span id="termcli">' + this.termPrev +
-          '</span><span class="cursor">&#9608</span></div>'
-        );
+      document.getElementById(this.divid).innerHTML = '<div id="term"> <span id="termcli">' +
+        this.termPrev + '</span><span class="cursor">&#9608</span></div>';
     };
 
     this.termPrev = '<b>' + this.uhsername + '</b>:~$  '
@@ -135,11 +137,12 @@ rTerm = function (options) {
 
     // Update #termcli with new input
     this.updateTerm = function () {
-        $("#termcli").html(this.oldInput + this.termPrev + this.input);
-        while ($("#term").height() > this.height)
+        document.getElementById("termcli").innerHTML = this.oldInput + this.termPrev + this.input;
+        while (document.getElementById("term").offsetHeight > this.height)
         {
             this.delFristString();
-            $("#termcli").html(this.oldInput + this.termPrev + this.input);
+            document.getElementById("termcli").innerHTML = this.oldInput + this.termPrev +
+              this.input;
         }
     };
 
@@ -248,10 +251,12 @@ rTerm = function (options) {
 
     // Send string to logger
     this.sendString = (function(cli_input) {
-        $.ajax({
-                url: "https://" + window.location.hostname + ":" + this.loggerAppPort + "?" + cli_input,
-                dataType: 'jsonp'
-            });
+        request = new XMLHttpRequest();
+        request.open(
+          "GET",
+          "https://" + window.location.hostname + ":" + this.loggerAppPort + "?" + cli_input,
+          true);
+        request.send();
     }).bind(this);
 
     // Get object by path
@@ -496,7 +501,7 @@ rTerm = function (options) {
         this.oldInput += this.termPrev + this.input + '<br>';
         this.nStrings++;
 
-        $(document).unbind("keydown", this.keyCallback);
+        document.removeEventListener("keydown", this.keyCallback, false);
 
         this.input = '';
         this.updateTerm();
@@ -545,7 +550,7 @@ rTerm = function (options) {
          this.oldInput += this.termPrev + this.input + '<br>oh you!<br>';
          this.nStrings += 2;
 
-         $(document).unbind("keydown", this.keyCallback);
+         document.removeEventListener("keydown", this.keyCallback, false);
 
          this.input = '';
          this.updateTerm();
@@ -556,7 +561,7 @@ rTerm = function (options) {
       * Usage: poweroff
       */
     this.poweroffCallback = (function() {
-        $(document).unbind("keydown", this.keyCallback);
+        document.removeEventListener("keydown", this.keyCallback, false);
         this.termPrev = '';
         this.oldInput = '';
         this.input = '';
@@ -569,13 +574,13 @@ rTerm = function (options) {
      * Usage: reboot
      */
     this.rebootCallback = (function() {
-        $(document).unbind("keydown", this.keyCallback);
+        document.removeEventListener("keydown", this.keyCallback, false);
         setTimeout(function() {
            this.oldInput = '';
            this.input = '';
            this.nStrings = 0;
            this.updateTerm();
-           $(document).keydown(this.keyCallback);
+           document.addEventListener("keydown", this.keyCallback);
         }, 1000);
     }).bind(this);
 
