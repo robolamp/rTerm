@@ -1,5 +1,5 @@
 # rTerm
-Fake unix terminal for my personal page
+Fake UNIX terminal for my personal page
 
 ## Avaliable commands
 ### ls
@@ -7,11 +7,11 @@ Fake unix terminal for my personal page
      Usage: ls [OPTION]... [FILE]...
      Options:
         -a    do not ignore entries starting with .
-     
+
 ### cat
      Concatenate FILE to output.
      Usage: cat [OPTION]... [FILE]...
-     
+
 ### cd
      If DIR is a directory: change current working directory to DIR;
      if DIR is a link: open URL in a new tab.
@@ -36,7 +36,7 @@ Fake unix terminal for my personal page
 ### echo
      Print the STRING passed as argument
      Usage: echo [STRING]
-     
+
 ### exit
      Exit console (deactivate keys callbacks)
      Usage: exit
