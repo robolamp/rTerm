@@ -266,6 +266,8 @@ rTerm = function (options) {
             path = dstname;
         } else if (dstname.startsWith("~")) {
             path = this.fsstart + "/" + dstname.slice(1);
+        } else if (this.cdir == "/") {
+            path = "/" + dstname;
         } else {
             path = this.cdir + "/" + dstname;
         }
